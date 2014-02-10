@@ -5,6 +5,9 @@ describe "Rating" do
   let!(:beer1) { FactoryGirl.create :beer, name:"iso 3", brewery:brewery }
   let!(:beer2) { FactoryGirl.create :beer, name:"Karhu", brewery:brewery }
   let!(:user) { FactoryGirl.create :user }
+  let!(:rating1) { FactoryGirl.create :rating, score: 3, beer:beer1, user:user}
+  let!(:rating2) { FactoryGirl.create :rating,  score: 3, beer:beer2, user:user}
+  let!(:rating3) { FactoryGirl.create :rating,  score: 3, beer:beer1, user:user}
 
   before :each do
     visit signin_path
@@ -13,6 +16,7 @@ describe "Rating" do
     click_button('Log in')
   end
 
+  ##undefined method `name' for nil:NilClass??
   it "when given, is registered to the beer and user who is signed in" do
     visit new_rating_path
     select('iso 3', from:'rating[beer_id]')
@@ -28,18 +32,10 @@ describe "Rating" do
   end
 
   it "lists the ratings and their total number" do
-    create_beers_with_ratings([1,2,3], user)
     visit ratings_path
-    expect(page).to have_content "Number of ratings: #{Rating.count}"
-    Rating.each do |rating_number|
-      expect(page).to have_content rating_number
-    end
+    expect(page).to have_content "Number of ratings #{Rating.count}"
+    Rating.to_enum.each_entry expect(page).to have_content
+
   end
 
-end
-
-def create_beers_with_ratings(*scores, user)
-  scores.each do |score|
-    create_beer_with_rating score, user
-  end
 end
