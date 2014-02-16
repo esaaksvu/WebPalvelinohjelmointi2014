@@ -5,20 +5,13 @@ gem 'rails', '4.0.2'
 
 group :development, :test do
   gem 'sqlite3'
-  gem 'rspec-rails', '~> 2.14.1'
 end
 
 group :production do
-  gem 'pg'
-  gem 'rails_12factor'
+   gem 'pg'
+   gem 'rails_12factor' 
 end
 
-group :test do
-  gem 'factory_girl_rails'
-  gem 'capybara'
-  gem 'launchy'
-  gem 'simplecov', require: false
-end
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
@@ -51,9 +44,18 @@ gem 'bcrypt-ruby', '~> 3.1.2'
 # Use unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
-# gem 'capistrano', group: :development
+group :development, :test do
+  gem 'rspec-rails', '~> 2.14.1'
+  gem 'byebug'
+end
 
-# Use debugger
-gem 'debugger', group: [:development, :test]
-gem 'byebug', group: [:development, :test]
+group :test do
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'launchy'
+  gem 'simplecov', require: false
+  gem 'webmock'
+end
+
+gem 'httparty'
+gem "rails-settings-cached", "0.3.1"
