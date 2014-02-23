@@ -4,9 +4,8 @@ include OwnTestHelper
 
 describe "Rating" do
   let!(:brewery) { FactoryGirl.create :brewery, name:"Koff" }
-  let!(:style) { FactoryGirl.create :style, name:"test" }
-  let!(:beer1) { FactoryGirl.create :beer, name:"iso 3", brewery:brewery, style:style }
-  let!(:beer2) { FactoryGirl.create :beer, name:"Karhu", brewery:brewery, style:style }
+  let!(:beer1) { FactoryGirl.create :beer, name:"iso 3", brewery:brewery }
+  let!(:beer2) { FactoryGirl.create :beer, name:"Karhu", brewery:brewery }
   let!(:user) { FactoryGirl.create :user }
 
   before :each do
