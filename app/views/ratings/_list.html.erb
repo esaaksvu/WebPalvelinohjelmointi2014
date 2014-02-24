@@ -10,7 +10,7 @@
   <% besties.each do |b| %>
       <tr>
         <td><%= link_to b.name, b %></td>
-        <td><%= b.average_rating %></td>
+        <td><%= round_average(b.average_rating) %></td>
       </tr>
   <% end %>
   </tbody>
