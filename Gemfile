@@ -63,6 +63,9 @@ gem 'httparty'
 gem "rails-settings-cached", "0.3.1"
 gem 'jquery-turbolinks'
 gem 'bootstrap-sass'
+gem 'rack-mini-profiler'
+
 group :development do
   gem 'rails_layout'
 end
+
