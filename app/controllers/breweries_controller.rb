@@ -2,12 +2,19 @@ class BreweriesController < ApplicationController
   before_action :set_brewery, only: [:show, :edit, :update, :destroy]
   before_action :ensure_that_signed_in, except: [:index, :show, :list]
   before_action :ensure_that_signed_in_as_admin, only: [:destroy]
+  before_action :skip_if_cached, only:[:index]
 
   # GET /breweries
   # GET /breweries.json
   def index
     @active_breweries = Brewery.active
     @retired_breweries = Brewery.retired
+
+    case @order
+      when 'name' then @active_breweries.sort_by!{ |b| b.name } and  @retired_breweries.sort_by!{ |b| b.name }
+      when 'year' then @active_breweries.sort_by!{ |b| b.year } and  @retired_breweries.sort_by!{ |b| b.year }
+    end
+
  end
 
   # GET /breweries/1
@@ -17,7 +24,6 @@ class BreweriesController < ApplicationController
 
 
   def list
-
   end
 
   # GET /breweries/new
@@ -33,7 +39,7 @@ class BreweriesController < ApplicationController
   # POST /breweries.json
   def create
     @brewery = Brewery.new(brewery_params)
-
+    ["brewerylist-name", "brewerylist-year"].each{ |f| expire_fragment(f) }
     respond_to do |format|
       if @brewery.save
         format.html { redirect_to @brewery, notice: 'Brewery was successfully created.' }
@@ -50,6 +56,7 @@ class BreweriesController < ApplicationController
   def update
     respond_to do |format|
       if @brewery.update(brewery_params)
+        ["brewerylist-name", "brewerylist-year"].each{ |f| expire_fragment(f) }
         format.html { redirect_to @brewery, notice: 'Brewery was successfully updated.' }
         format.json { head :no_content }
       else
@@ -63,6 +70,7 @@ class BreweriesController < ApplicationController
   # DELETE /breweries/1.json
   def destroy
     @brewery.destroy
+    ["brewerylist-name", "brewerylist-year"].each{ |f| expire_fragment(f) }
     respond_to do |format|
       format.html { redirect_to breweries_url }
       format.json { head :no_content }
@@ -80,4 +88,8 @@ class BreweriesController < ApplicationController
       params.require(:brewery).permit(:name, :year, :active)
     end
 
+    def skip_if_cached
+      @order = params[:order] || 'name'
+      return render :index if fragment_exist?( "brewerylist-#{params[:order]}"  )
+    end
 end

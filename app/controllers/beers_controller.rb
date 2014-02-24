@@ -5,11 +5,6 @@ class BeersController < ApplicationController
   before_action :ensure_that_signed_in_as_admin, only: [:destroy]
   before_action :set_breweries_and_styles_for_template, only: [:new, :edit, :create]
 
-  def skip_if_cached
-    @order = params[:order] || 'name'
-    return render :index if fragment_exist?( "beerlist-#{params[:order]}"  )
-  end
-
   def index
     @beers = Beer.includes(:brewery, :style).all
 
@@ -96,5 +91,10 @@ class BeersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def beer_params
       params.require(:beer).permit(:name, :style_id, :brewery_id)
+    end
+
+    def skip_if_cached
+      @order = params[:order] || 'name'
+      return render :index if fragment_exist?( "beerlist-#{params[:order]}"  )
     end
 end
